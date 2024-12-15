@@ -2,7 +2,7 @@ use crate::{Message, ViewState, ViewUpdate};
 use iced::{widget::column, Element};
 
 pub fn view(views: &ViewState) -> Element<Message> {
-    column![views.url_bar.view()].into()
+    column![views.url_bar.view(), views.request_editor.view()].into()
 }
 
 pub fn update(views: &mut ViewState, message: Message) -> iced::Task<Message> {

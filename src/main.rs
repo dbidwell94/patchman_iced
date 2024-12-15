@@ -2,6 +2,7 @@
 
 mod app;
 mod global_messages;
+mod request_editor;
 mod url_bar;
 
 #[macro_use]
@@ -30,11 +31,14 @@ pub enum Message {
 #[derive(Default)]
 pub struct ViewState {
     url_bar: url_bar::UrlBar,
+    request_editor: request_editor::RequestEditor,
 }
 
 fn main() -> iced::Result {
     let locale = sys_locale::get_locale().unwrap_or("en-US".to_string());
     set_locale(&locale);
+
+    let icon_bytes = include_bytes!("../assets/icon.png");
 
     iced::application("Patchman", app::update, app::view)
         .executor::<iced::executor::Default>()
@@ -47,7 +51,7 @@ fn main() -> iced::Result {
         .antialiasing(true)
         .window(Settings {
             min_size: Some((800., 600.).into()),
-            icon: Some(iced::window::icon::from_file("assets/icon.png").unwrap()),
+            icon: Some(iced::window::icon::from_file_data(icon_bytes, None).unwrap()),
             ..Settings::default()
         })
         .run()
