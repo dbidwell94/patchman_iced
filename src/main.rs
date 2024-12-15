@@ -1,27 +1,30 @@
-#![windows_subsystem = "windows"]
+#![cfg_attr(not(feature = "console"), windows_subsystem = "windows")]
 
 mod app;
+mod global_messages;
 mod url_bar;
 
 #[macro_use]
 extern crate rust_i18n;
 
 use iced::{window::Settings, Theme};
+use rust_i18n::set_locale;
 use std::fmt::Debug;
 
-i18n!("locales", fallback = "en");
+i18n!("locales", fallback = "en-US");
 
 pub(crate) trait ViewUpdate<T>
 where
     T: Debug,
 {
     fn view(&self) -> iced::Element<Message>;
-    fn update(&mut self, message: T);
+    fn update(&mut self, message: T) -> iced::Task<Message>;
 }
 
 #[derive(Debug, Clone)]
 pub enum Message {
     UrlBar(url_bar::UrlMessage),
+    GlobalMessage(global_messages::GlobalMessage),
 }
 
 #[derive(Default)]
@@ -30,6 +33,9 @@ pub struct ViewState {
 }
 
 fn main() -> iced::Result {
+    let locale = sys_locale::get_locale().unwrap_or("en-US".to_string());
+    set_locale(&locale);
+
     iced::application("Patchman", app::update, app::view)
         .executor::<iced::executor::Default>()
         .theme(|_| match dark_light::detect() {
