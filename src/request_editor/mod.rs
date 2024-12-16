@@ -1,3 +1,6 @@
+mod headers;
+mod params;
+
 use iced::widget::Text;
 
 use crate::{Message, ViewUpdate};
